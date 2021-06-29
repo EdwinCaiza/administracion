@@ -1,0 +1,231 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../templates/template.xhtml">
+
+    <ui:define name="tituloPagina">
+        - Cargos Por Persona
+    </ui:define>  
+    <ui:define name="head">
+        <title>#{msg['aplicacion.nombre.sistema']}</title>
+
+    </ui:define> 
+    <f:metadata>
+        <f:viewAction action="#{cargoPorPersonaAction.init()}"/>
+    </f:metadata>
+    <ui:define name="contenido">
+        <h:body>
+            <style type="text/css">
+                .ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell { 
+                    text-align: center;
+                }
+                .customPanelGrid .ui-panelgrid-content { 
+                    align-items: flex-start;
+                }
+            </style>
+            <style>
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    background-color: transparent;
+                }
+                .my-heading-row { 
+                    background-color: rgb(207,208,210); 
+                    /*var(--surface-c)*/; 
+                    font-weight: bold; 
+                    color: #ffffff;
+                }
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    padding: 10px;
+                }
+                body .ui-dialog .ui-dialog-footer{
+                    padding:8%;
+                }
+
+                .ui-grid-col-1 {
+                    width: 35%;
+                }
+
+                .ui-grid-col-2 {
+                    width: 8.66666667%;
+                }
+                .ui-grid-col-3 {
+                    width: 75%;
+                }
+
+                .ui-grid-col-4 {
+                    width: 40.33333333%;
+                }
+                .ui-dialog-content ui-widget-content{
+                    text-align: -moz-left;
+                }
+                .p-grid, .p-grid {
+                    font-weight: bold; 
+                    text-align: justify;
+                }
+                body .ui-button.ui-button-success.ui-state-active{
+                    color: darkgreen;
+                    icon: inherit;
+                    image-resolution: from-image;
+                }
+                body .ui-button.ui-button-success.ui-state-deactive{
+                    color: red;
+                }
+            </style>
+            <h:form id="formA" prependId="false" rendered="true">
+                <autoupdate>
+                    <p:growl globalOnly="true" showDetail="true" id="growl" life="1000"/>
+                </autoupdate>
+                <ui:decorate template="../../templates/buscarPersona.xhtml">
+                    <ui:define name="seleccionaPersona">
+                        <p:commandLink value="#{itemPersona[0]}" action="#{usuarioAction.seleccionaPersona(itemPersona[0].toString())}" 
+                                       update="panDialogBuscarPersona"/>
+                    </ui:define>
+                </ui:decorate>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                        <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                    </p:commandButton>
+                    <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                        <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                    </p:commandButton>
+                </p:confirmDialog>
+                <p:panel class="panel80">
+                    <div class="card">
+                        <p:dataTable id="tblcargoPersona" var="item" value="#{cargoPorPersonaBean.listaCargoPersona}" selectionMode="single"
+                                     selection="#{cargoPorPersonaBean.cargoPersonaActual}" rowKey="#{item.capCodigo}"
+                                     paginator="true" rows="#{msg['generico.numeroFilas']}"
+                                     paginatorAlwaysVisible="false" paginatorPosition="bottom" rowIndexVar="indice">
+                            <p:ajax event="rowSelect" listener="#{cargoPorPersonaAction.verDialog()}" update="dialogNuevo"/>
+                            <p:ajax event="rowUnselect" listener="#{cargoPorPersonaAction.verDialog()}" update="dialogNuevo"/>
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between p-ai-center">
+                                    Lista de Cargo Por Persona
+                                    <div style="text-align: right">
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-success"  icon="pi pi-plus-circle"  value="#{msg['generico.nuevo']}" action="#{cargoPorPersonaAction.crearNuevo()}" update=":formA"/>
+                                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                                        <p:columnToggler datasource="tblcargoPersona" trigger="toggler"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Nro." style="width:5%; text-align: center " responsivePriority="3" >
+                                <h:outputText value="#{indice+1}"/>
+                            </p:column>
+                            <p:column headerText="Codigo." style="width:5%; text-align: center " responsivePriority="3" >
+                                <h:outputText value="#{item.capCodigo}"/>
+                            </p:column>
+                            <p:column headerText="Institución" style="width:25%; text-align: center " responsivePriority="1" >
+                                <h:outputText value="#{item.insCodigo.insDescripcion}" />
+                            </p:column>
+                            <p:column headerText="Persona" style="width:15%; text-align: center " responsivePriority="1" >
+                                <h:outputText value="#{item.perCodigo.perApellidos} #{item.perCodigo.perNombres}"/>
+                            </p:column>
+                            <p:column headerText="Cargo" style="width:10%; text-align: center " responsivePriority="2" >
+                                <h:outputText value="#{item.carCodigo.carDescripcion}"/>
+                            </p:column>
+                            <p:column headerText="Fecha Desde" style="width:20%; text-align: center " responsivePriority="2" >
+                                <h:outputText value="#{item.capDesde}"/>
+                            </p:column>
+                            <p:column headerText="Fecha Hasta" style="width:20%; text-align: center " responsivePriority="2" >
+                                <h:outputText value="#{item.capHasta}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['generico.eliminar']}" style="width: 10%; text-align: center " responsivePriority="2"  >
+                                <p:commandButton styleClass="ui-button-outlined ui-button-danger" icon="pi pi-trash" action="#{institutcionAction.borrarDatos(item)}" update="formA" >
+                                    <p:confirm header="#{msg['generico.confirmar.titulo']}" message="#{msg['generico.confirmar.eliminacion']} ?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+
+                        </p:dataTable>
+                    </div>
+                    <div class="card">
+                        <p:dialog id="dialogNuevo" modal="true" closable="false" style="text-align: center;"
+                                  header="Instituciones" showEffect="fade"
+                                  visible="#{cargoPorPersonaBean.verDialog}" resizable="false">
+                            <p:messages id="messages" showDetail="true" closable="true" ></p:messages>
+                            <p:panelGrid columns="2"
+                                         columnClasses="ui-grid-col-1, ui-grid-col-3"
+                                         layout="grid"
+                                         styleClass="ui-panelgrid-blank ui-fluid"
+                                         style="border:10px none; background-color:transparent">
+                                <p:outputLabel for="@next" value="Id: " style="font-weight: bold; width: 90%"/>
+                                <p:inputText value="#{cargoPorPersonaBean.cargoPersonaActual.capCodigo}" disabled="true"/> 
+                                <p:outputLabel for="@next" value="Institución:" style="font-weight: bold; width: 90%"/>
+                                <p:selectOneMenu id="advanced" value="#{cargoPorPersonaBean.cargoPersonaActual.insCodigo}" converter="selectItemsConverter"
+                                                 panelStyle="width:180px" var="item"
+                                                 filter="true" filterMatchMode="startsWith">
+                                      <f:selectItem itemLabel="Seleccione..." itemValue=""/>
+                                    <f:selectItems value="#{institucionBean.listaInstitucion}" var="institucion"
+                                                   itemLabel="#{institucion.insDescripcion}" itemValue="#{institucion}"/>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Cargo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.insDescripcion}"/>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{institucionBean.listaInstitucion.size()} Instituciones"
+                                                      style="font-weight:bold;" styleClass="p-py-1 p-d-block"/>
+                                    </f:facet>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="@next" value="Persona: " style="font-weight: bold; width: 90%"/>
+                                <p:panelGrid columns="2"
+                                             columnClasses="ui-grid-col-5, ui-grid-col-6"
+                                             layout="grid"
+                                             styleClass="ui-panelgrid-blank ui-fluid"
+                                             style="border:10px none; background-color:transparent; align-items: center">
+                                    <p:inputText id="txtPersona" value="#{buscarPersona.retornaApellidoNombre(cargoPorPersonaBean.cargoPersonaActual.perCodigo)}" disabled="true"> 
+                                        <p:watermark for="txtPersona" value="Persona"/>
+                                        <p:autoUpdate/>
+                                    </p:inputText>
+                                    <p:commandButton value="#{msg['generico.busca']}" action="#{buscarPersona.buscarPersona()}" update="panDialogBuscarPersona"/>
+                                </p:panelGrid>
+
+
+
+                                <p:outputLabel for="@next" value="Cargo: " style="font-weight: bold; width: 90%"/>
+
+                                <p:selectOneMenu id="advanced1" value="#{cargoPorPersonaBean.cargoPersonaActual.carCodigo}" converter="selectItemsConverter"
+                                                 panelStyle="width:180px" var="item"
+                                                 filter="true" filterMatchMode="startsWith">
+                                     <f:selectItem itemLabel="Seleccione..." itemValue=""/>
+                                    <f:selectItems value="#{cargosBean.listaCargos}" var="cargos"
+                                                   itemLabel="#{cargos.carDescripcion}" itemValue="#{cargos}"/>
+                                    <p:column style="width:10%">
+                                        <span class="flag flag-#{item.carCodigo}" style="width: 30px; height: 20px"/>
+                                    </p:column>
+                                    <p:column>
+                                        <f:facet name="header">
+                                            <h:outputText value="Cargo"/>
+                                        </f:facet>
+                                        <h:outputText value="#{item.carDescripcion}"/>
+                                    </p:column>
+                                    <f:facet name="footer">
+                                        <h:outputText value="#{cargosBean.listaCargos.size()} cargos"
+                                                      style="font-weight:bold;" styleClass="p-py-1 p-d-block"/>
+                                    </f:facet>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="@next" value="Fecha Desde:" style="font-weight: bold; width: 90%"/>
+                                <p:datePicker id="basic" value="#{cargoPorPersonaBean.cargoPersonaActual.capDesde}" />
+                                <p:outputLabel for="@next" value="Fecha Hasta: " style="font-weight: bold; width: 90%"/>
+                                <p:datePicker id="basic1" value="#{cargoPorPersonaBean.cargoPersonaActual.capHasta}" />
+                            </p:panelGrid>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:fragment>
+                                        <p:commandButton  styleClass="ui-button-outlined ui-button-warning alineaIzquierda" icon="pi pi-undo" value="#{msg['generico.cancelar']}" action="#{cargoPorPersonaAction.cancelar()}" update="formA"/>
+                                    </p:fragment>
+                                    <p:commandButton id="btnGuardar" styleClass="ui-button-outlined ui-button-success alineaDerecha" icon="pi pi-save" 
+                                                     disabled="false"
+                                                     value="#{msg['generico.guardar']}" action="#{institutcionAction.guardarDatos()}" update=":formA">
+                                        <p:confirm header="#{msg['generico.confirmar.titulo']}"  message="#{msg['generico.confirmar.detalle']} ?" icon="pi pi-question-circle"/>
+                                    </p:commandButton>
+
+                                </center>
+                            </f:facet>
+                        </p:dialog>
+                    </div>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

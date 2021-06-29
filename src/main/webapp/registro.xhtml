@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"      
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>IngenioSoftware</title>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/img/icoIngenio.jpg"/>
+        <link rel="stylesheet" type="text/css" href="resources/css/register.css"/>
+    </h:head>
+
+
+    <h:body style="background-image: url('resources/img/fondo.jpg');  background-size: cover ">
+
+        <h:form  id="formA" class="form" prependId="false" >
+            <autoupdate>
+                <p:growl id="growl" life="2000"/>
+            </autoupdate>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                    <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                </p:commandButton>
+                <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                    <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                </p:commandButton>
+            </p:confirmDialog>
+
+            <div class="reg-box">
+                <img src="resources/img/usuarioAdd.png" class="avatar" alt="Avatar Image"/>
+                <h1>Registro de Usuario</h1>
+                <div class="card">
+                    <h:outputLabel value="Apellido: *" />
+                    <p:inputText id="txtApellido" value="#{personaBean.personaActual.perApellidos}"
+                                 maxlength="64" required="true"
+                                 requiredMessage="#{msg['generico.mensajes.requerido']}"
+                                 onkeyup="var start = this.selectionStart;
+                                         var end = this.selectionEnd;
+                                         this.value = this.value.toUpperCase();
+                                         this.setSelectionRange(start, end);">
+                        <p:watermark for="txtApellido" value="Digite su Apellido"/>
+                        <p:ajax event="blur" listener="#{personaAction.generaUsuario()}"  update="txtUsuario"/>
+                    </p:inputText>
+                    <h:outputLabel value="Nombres: *"  />
+                    <p:inputText id="txtnombre" value="#{personaBean.personaActual.perNombres}"
+                                 maxlength="64" required="true"
+                                 requiredMessage="#{msg['generico.mensajes.requerido']}"
+                                 onkeyup="var start = this.selectionStart;
+                                         var end = this.selectionEnd;
+                                         this.value = this.value.toUpperCase();
+                                         this.setSelectionRange(start, end);">
+                        <p:watermark for="txtnombre" value="Digite su Nombre"/>
+                        <p:ajax event="blur" listener="#{personaAction.generaUsuario()}"  update="txtUsuario"/>
+                    </p:inputText>
+                    <h:outputLabel value="Usuario: *" />
+                    <p:inputText id="txtUsuario" value="#{usuarioBean.usuarioActual.usiUsuario}" placeholder="">
+                        <p:ajax event="blur" listener="#{personaAction.generaUsuario()}"  update="txtUsuario"/>
+                    </p:inputText>
+                    <h:outputLabel value="Correo Electronico: *"  />
+                    <p:inputText value="#{personaBean.personaActual.perCorreo}"
+                                 required="true"
+                                 requiredMessage="#{msg['generico.mensajes.requerido']}"
+                                 placeholder="correodelusuario@ingenio.com">
+                        <f:validateRegex
+                            pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                    </p:inputText>
+                    <input type="submit" value="Registrar" onclick="#{personaAction.guardaPersonaGeneraUsuario()}"/>
+                    <br/>       
+                    <a href="index.html">Ingreso de Usuario Registrado </a>
+                    <br/>
+                    <a href="resetContrasena.html">Olvido su contraseña? </a>
+                    <br/>
+                    <a > Derechos reservados © 2021 EC, Inc.</a>
+                </div>
+            </div>
+            <p:messages id="msg" showIcon="false" showDetail="true" globalOnly="true"   />
+        </h:form>
+    </h:body>
+</html>
+

@@ -1,0 +1,170 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../templates/template.xhtml">
+    <ui:define name="tituloPagina">
+        - Mantenimiento de MenuItems
+    </ui:define>  
+    <ui:define name="head">
+        <title>#{msg['aplicacion.nombre.sistema']}</title>
+    </ui:define> 
+    <f:metadata>
+        <f:viewAction action="#{menuItemsAction.init()}"/>
+    </f:metadata>
+    <ui:define name="contenido">
+        <h:body>
+            <style type="text/css">
+                .ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell { 
+                    text-align: center;
+                }
+                .customPanelGrid .ui-panelgrid-content { 
+                    align-items: flex-start;
+                }
+            </style>
+            <style>
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    background-color: transparent;
+                }
+                .my-heading-row { 
+                    background-color: rgb(207,208,210); 
+                    /*var(--surface-c)*/; 
+                    font-weight: bold; 
+                    color: #ffffff;
+                }
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    padding: 10px;
+                }
+                body .ui-dialog .ui-dialog-footer{
+                    padding:8%;
+                }
+
+                .ui-grid-col-1 {
+                    width: 35%;
+                }
+
+                .ui-grid-col-2 {
+                    width: 8.66666667%;
+                }
+                .ui-grid-col-3 {
+                    width: 65%;
+                }
+
+                .ui-grid-col-4 {
+                    width: 40.33333333%;
+                }
+            </style>
+            <h:form id="formA" prependId="false" >
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                        <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                    </p:commandButton>
+                    <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                        <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                    </p:commandButton>
+                    <p:growl id="msgs" showDetail="true" escape="false"/>
+                </p:confirmDialog>
+                <p:panel class="panel80">
+                    <div class="card">
+                        <p:treeTable id="trtblMenu" value="#{menuItemsBean.root}" var="document" selectionMode="single"
+                                     scrollable="true" scrollHeight="350"  paginator="true"
+                                     selection="#{menuItemsBean.nodoSeleccionado}" style="margin-top:0"
+                                     paginatorAlwaysVisible="false" paginatorPosition="bottom">
+                            <p:ajax event="select" listener="#{menuItemsAction.seleccionaMenu}" update="dialogNuevo"/>
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between p-ai-center">
+                                    Lista de Items del Menu
+                                    <div style="text-align: right">
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-success"  icon="pi pi-plus-circle"  value="#{msg['generico.nuevo']}" action="#{menuItemsAction.crearNuevoMenuItem()}" update=":formA"/>
+                                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                                        <p:columnToggler datasource="trtblMenu" trigger="toggler"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+
+                            <p:column headerText="Descripción" style="width:25%; text-align: justify " responsivePriority="2">
+                                <h:outputText value="#{document.meiDescripcion}" />
+                            </p:column>
+                            <p:column  headerText="Módulo" style="width:20%; text-align: justify " responsivePriority="3">
+                                <h:outputText value="#{document.mosCodigo.mosDescripcion}"/>
+                            </p:column>
+
+                            <p:column  headerText="Url" style="width:20%; text-align: justify " responsivePriority="2">
+                                <h:outputText value="#{document.meiUrl}"/>
+                            </p:column>
+                             <p:column  headerText="Orden" style="width:5%; text-align: justify " responsivePriority="2">
+                                <h:outputText value="#{document.meiOrden}"/>
+                            </p:column>
+                            <p:column  headerText="Estado" style="width:5%; text-align: center " responsivePriority="3">
+                                <h:outputText value="#{document.meiEstado}"/>
+                            </p:column>
+                            <p:column headerText="#{msg['generico.nuevoSolo']}" style="width: 7%; text-align: center " responsivePriority="3" >
+                                <p:commandButton styleClass="ui-button-outlined ui-button-success" icon="pi pi-plus-circle" action="#{menuItemsAction.crearNuenoMenuSubItem(document)}" update="dialogNuevo" />
+                            </p:column>
+
+                            <p:column headerText="#{msg['generico.eliminar']}" style="width: 8%; text-align: center " responsivePriority="3" >
+                                <p:commandButton styleClass="ui-button-outlined ui-button-danger" icon="pi pi-trash" action="#{menuItemsAction.borrarItem(document)}" update=":formA" >
+                                    <p:confirm header="#{msg['generico.confirmar.titulo']}" message="#{msg['generico.confirmar.eliminacion']} ?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:treeTable>
+                    </div>
+                    <div class="card">
+                        <p:dialog id="dialogNuevo" modal="true" closable="true" styleClass=" tituloDialogo"
+                                  header="Menu Items" showEffect="fade"   style="text-align: justify"
+                                  visible="#{menuItemsBean.verDialog}" resizable="false">
+                            <p:panelGrid columns="2"
+                                         columnClasses="ui-grid-col-1, ui-grid-col-3"
+                                         layout="grid"
+                                         styleClass="ui-panelgrid-blank ui-fluid"
+                                         style="border:10px none; background-color:transparent">
+                                <p:outputLabel for="@next" value="Id: *" style="font-weight: bold"/>
+                                <p:inputText  value="#{menuItemsBean.menuItemActual.meiCodigo}" disabled="true">
+
+                                </p:inputText>
+                                <p:outputLabel for="@next" value="Descripción: " style="font-weight: bold"/>
+                                <p:inputText id="txtDescripcion" value="#{menuItemsBean.menuItemActual.meiDescripcion}"
+                                             maxlength="64" 
+                                             required="#{menuItemsBean.verDialog}" requiredMessage="#{msg['generico.mensajes.requerido']}"
+                                             onkeyup="javascript:this.value = this.value.toUpperCase()">
+                                    <p:watermark for="txtDescripcion" value="Descripción"/>
+                                </p:inputText>
+                                <p:outputLabel for="@next" value="Url: " style="font-weight: bold"/>
+                                <p:inputText id="txtURL" value="#{menuItemsBean.menuItemActual.meiUrl}"
+                                             maxlength="64" 
+                                             required="#{menuItemsBean.verDialog}" requiredMessage="#{msg['generico.mensajes.requerido']}">
+                                    <p:watermark for="txtURL" value="/administracion/private/..."/>
+                                </p:inputText>
+                                <p:outputLabel for="@next" value="Orden : " style="font-weight: bold"/>
+                                <p:inputText id="txtOrden" value="#{menuItemsBean.menuItemActual.meiOrden}"
+                                             maxlength="10" 
+                                             required="#{menuItemsBean.verDialog}" requiredMessage="#{msg['generico.mensajes.requerido']}">
+                                    <p:watermark for="txtOrden" value="Solo Numeros"/>
+                                </p:inputText>
+                                <p:outputLabel rendered="#{menuItemsBean.verModulo}" for="@next" value="Módulo : *" style="font-weight: bold"/>
+                                <p:selectOneMenu rendered="#{menuItemsBean.verModulo}" id="txtTipoPersona" value="#{menuItemsBean.menuItemActual.mosCodigo}" converter="selectItemsConverter"
+                                                 style="width: 160px">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione..."/>
+                                    <f:selectItems value="#{moduloSistemaBean.listaModulos}" 
+                                                   var="item" itemLabel="#{item.mosDescripcion}" itemValue="#{item}"/>
+                                </p:selectOneMenu>
+
+                            </p:panelGrid>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:commandButton styleClass="ui-button-outlined ui-button-success alineaDerecha" icon="pi pi-save" value="#{msg['generico.guardar']}" action="#{menuItemsAction.guardarDatos()}" update=":formA">
+                                        <p:confirm header="#{msg['generico.confirmar.titulo']}"  message="#{msg['generico.confirmar.detalle']} ?" icon="pi pi-question-circle"/>
+                                    </p:commandButton>
+                                    <p:fragment>
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-warning alineaDerecha" icon="pi pi-undo" value="#{msg['generico.cancelar']}" action="#{menuItemsAction.cancelar()}" update="dialogNuevo"/>
+                                    </p:fragment>
+                                </center>
+                            </f:facet>
+                        </p:dialog>
+                    </div>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

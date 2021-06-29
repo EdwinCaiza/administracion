@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <f:view contentType="text/html" >
+        <h:head>
+            <title>#{msg['aplicacion.nombre.sistema']}</title>
+            <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/img/icoMI.jpg"/>
+            <link href="#{request.contextPath}/resources/css/default.css" rel="stylesheet" type="text/css"/>
+            <script type = "text/javascript"  src = "#{request.contextPath}/resources/js/bootstrap.min.js"></script> 
+            <link href="#{request.contextPath}/resources/css/menu.css" rel="stylesheet" type="text/css"/>
+            <link href="#{request.contextPath}/resources/css/accordion.css" rel="stylesheet" type="text/css"/>
+            <link href="#{request.contextPath}/resources/css/vistas.css" rel="stylesheet" type="text/css"/>
+            <script type = "text/javascript"  src = "#{request.contextPath}/resources/js/funciones.js"></script>
+            <script>
+                history.pushState(null, null, location.href);
+                window.onpopstate = function () {
+                    history.go(1);
+                };
+                function openNav() {
+                    document.getElementById("mySidenav").style.width = "400px";
+                }
+                function closeNav() {
+                    document.getElementById("mySidenav").style.width = "0";
+                }
+                $(function () {
+                    $('.navbar-toggle').click(function () {
+                        $('.navbar-nav').toggleClass('slide-in');
+                        $('.side-body').toggleClass('body-slide-in');
+                        $('#search').removeClass('in').addClass('collapse').slideUp(200);
+                        /// uncomment code for absolute positioning tweek see top comment in css
+                        //$('.absolute-wrapper').toggleClass('slide-in');
+                    });
+                    // Remove menu for searching
+                    $('#search-trigger').click(function () {
+                        $('.navbar-nav').removeClass('slide-in');
+                        $('.side-body').removeClass('body-slide-in');
+                        /// uncomment code for absolute positioning tweek see top comment in css
+                        //$('.absolute-wrapper').removeClass('slide-in');
+                    });
+                });
+                (function ($) {
+                    $(document).ready(function () {
+                        $('#cssmenu li.active').addClass('open').children('ul').show();
+                        $('#cssmenu li.has-sub>a').on('click', function () {
+                            $(this).removeAttr('href');
+                            var element = $(this).parent('li');
+                            if (element.hasClass('open')) {
+                                element.removeClass('open');
+                                element.find('li').removeClass('open');
+                                element.find('ul').slideUp(200);
+                            } else {
+                                element.addClass('open');
+                                element.children('ul').slideDown(200);
+                                element.siblings('li').children('ul').slideUp(200);
+                                element.siblings('li').removeClass('open');
+                                element.siblings('li').find('li').removeClass('open');
+                                element.siblings('li').find('ul').slideUp(200);
+                            }
+                        });
+                    });
+                })(jQuery);
+            </script>
+            <style>
+                .list-group.panel > .list-group-item {
+                    border-bottom-right-radius: 4px;
+                    border-bottom-left-radius: 4px
+                }
+                .list-group-submenu {
+                    margin-left:20px;
+                }
+                .strong { font-weight: bold; }
+            </style>
+            <ui:insert name="head"></ui:insert>
+        </h:head>
+
+
+        <ui:remove>________________CABECERA__________________</ui:remove>
+        <div id="cab" class="cabecera">
+            <div class="botonMenu"> 
+                <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+            </div>
+            <div id="logoMP">       
+            </div>
+        </div>
+
+        <ui:remove>________________BARRA AZUL DE INFORMACIÓN__________________</ui:remove>
+        <div id="cab" class="barraTitulo">
+            <b><ui:insert name="nombreSistema">
+                    <p:growl globalOnly="false" showDetail="true"/>  
+                    #{accesoBean.moduloAcceso}
+                    <div class="alineaDerecha" style="margin-right: 25px" >
+                        <h:form id="fmrT" prependId="false">
+                            <td style="vertical-align: bottom !important;width: auto;font-weight: bolder; font-size: 10px;">
+                                <h:outputText value="Usuario:    "/>
+                                #{utilBean.usuarioActual.perCodigo.perNombres} #{utilBean.usuarioActual.perCodigo.perApellidos}
+                            </td>
+                        </h:form>
+                    </div>        
+                </ui:insert></b>
+            <ui:insert name="tituloPagina"></ui:insert>
+        </div>
+
+        <ui:remove>______________________ CONTENIDO DE PÁGINA____________________</ui:remove>
+        <div id="wrapper" class="contenidoFrame">
+            <style type="text/css">
+
+                /*------------------- MODIFICADOS PRIMEFACES ----------------------*/
+
+
+                /* MODIFIACION PRIMEFACES PARA EL TAMAÑO*/
+                body .ui-widget {
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+                    /*                                font-size: 0.85rem;*/
+                    font-size: 14px;
+                    text-decoration: none; 
+
+
+                }
+
+                .ui-widget-content a{
+                    color: #0000ff;
+                    text-decoration: none;
+                }
+                a:hover{
+                    color: #009933;
+                    text-decoration: underline;
+                }
+
+                .ui-growl {
+                    top:40px;
+                    width: 70%;
+                    left: 10px!important;
+                    margin-left:auto;
+                    margin-right:auto;
+                    position: fixed;
+                }
+
+                .ui-growl-message {
+                    padding: 0 0 5px 0;
+                    width: 95%;
+                    float: right;
+                }
+
+                .ui-growl-item-container {
+                    position: relative;
+                    margin: 0 0 10px 0;
+                    opacity: 0.95;
+                    filter: alpha(opacity=95);
+                }
+                .ui-dialog.ui-widget-content .ui-dialog-title {
+                    font-size: 14px !important;
+                    width: 100%  !important;
+                }
+
+                .ui-selectonemenu .ui-selectonemenu-trigger {
+                    border-right: 0;
+                    border-top: 0;
+                    border-bottom: 0;
+                    cursor: pointer;
+                    width: 24px;
+                    height: 100%;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    padding: 0 3px;
+                }
+
+
+                @media screen and (max-width:768px) {
+                    .ui-growl {
+                        top:40px;
+                        width: 90%;
+                        margin-left:auto;
+                        margin-right:auto;
+                        position: fixed;
+                    }
+
+                    .ui-growl-message {
+                        padding: 0 0 5px 0;
+                        width: 96%;
+                        float: right;
+                    }
+
+                    .ui-growl-item-container {
+                        position: relative;
+                        margin: 0 0 0px 0;
+                        opacity: 0.95;
+                        filter: alpha(opacity=95);
+                    }
+
+                }
+
+            </style>
+
+
+            <ui:insert name="contenido">
+            </ui:insert>
+        </div>
+
+
+        <ui:remove>__________________________PIE DE PÁGINA_______________________</ui:remove>
+        <div class="pie1 textomedio" align="center">
+            Ingenio ©  
+            <script type="text/javascript">
+                var dt = new Date();
+                document.write(dt.getUTCFullYear());
+            </script>
+        </div>
+
+
+        <ui:remove>__________________________MENU_______________________</ui:remove>        
+        <div id="mySidenav" class="sidenav">
+            <a style="color: #FFF; font-size: 24px; font-weight: bolder" href="javascript:void(0)" class="closebtn" 
+               onclick="closeNav()">&times; </a>           
+            <h:form id="frmMenu" prependId="false">
+                <div class="side-menu">
+                    <nav class="navbar navbar-default" role="navigation">
+                        <div class="side-menu-container">
+                            <div id='card'>
+                                <p:panelMenu class="menuEstilo"  model="#{utilBean.model}" />
+                            </div>
+                        </div>
+                    </nav>
+                    <br/>
+                    <div class="side-menu" style="bottom: 0px;padding: 10px;text-align: right;color: #01548a;font-size: 16px;width: 380px;">
+                        <span class="glyphicon glyphicon-log-out"></span> 
+                        <p:commandLink style="text-align: left; color: #FFF; font-size: 16px; text-decoration: none" 
+                                       value="Cambiar Clave"
+                                       action="#{accesoBean.verDialogCambioContraseña}" 
+                                       immediate="true" update="dialogEditarCC" onclick="closeNav()"/>
+
+
+                    </div>
+                    <div class="side-menu" style="bottom: 0px;padding: 10px;text-align: right;color: #01548a;font-size: 16px;width: 380px;background: #01548a;">
+                        <span class="glyphicon glyphicon-log-out"></span> 
+                        <h:commandLink style="text-align: right; color: #FFF; font-size: 16px; text-decoration: none" 
+                                       value="Cerrar sesión" actionListener="#{loginBean.logout()}"/>
+                    </div>
+                </div>
+            </h:form>
+        </div>
+
+
+
+        <ui:remove>_____________________ MÉTODO SESIÓN EXPIRADA__________________</ui:remove>
+        <ui:insert name="areaAjax">
+            <p:ajaxStatus>
+                <f:facet name="start">
+                    <div class="showbox">
+                        <div class="preloaderbar show active">      <span class="bar"></span>
+                        </div>
+                    </div>
+                </f:facet>
+                <f:facet name="contenido">
+                </f:facet>
+            </p:ajaxStatus>
+            <p:idleMonitor timeout="500000" onidle="PF('idleDialog').show();" />
+            <h:form>
+                <p:dialog header="Sesión Expirada" resizable="false"
+                          widgetVar="idleDialog" modal="true" width="500" height="120" closable="false">
+                    <h:outputText value="Estimado:" /> 
+                    <b style="color: #222222">#{loginBean.usuarioActual.habitante.habApellido} #{loginBean.usuarioActual.habitante.habNombre} </b>
+                    <br/><br/>
+                    <h:outputText value="#{msg['generico.usuario.salida']}" styleClass="textoGris"/>    <br/><br/> 
+                    <f:facet name="footer">
+                        <a class="botonAccion" href="#{request.contextPath}/index.html">
+                            <p:commandButton styleClass="alineaDerecha" value="Ir a Inicio" 
+                                             action="#{loginBean.logout()}" />
+                        </a>
+                    </f:facet>    
+                </p:dialog>
+            </h:form>
+        </ui:insert>
+
+        <ui:remove>_____________________ CAMBIO DE CONTRASEÑA__________________</ui:remove>
+        <ui:insert name="areaAjax">
+            <p:ajaxStatus>
+                <f:facet name="start">
+                    <div class="showbox">
+                        <div class="preloaderbar show active">      <span class="bar"></span>
+                        </div>
+                    </div>
+                </f:facet>
+                <f:facet name="contenido">
+                </f:facet>
+            </p:ajaxStatus>
+
+            <h:form prependId="false">
+                <p:outputPanel id="dialogEditarCC" >
+                    <p:dialog visible="#{loginBean.dialogoCambioContrasenia}" width="500" height="300" modal="true" closable="false" 
+                              onHide="#{loginBean.dialogoCambioContrasenia}"
+                              header="#{msg['usuario.cambio.contrasenia']}">
+                        <p:messages  showIcon="false" id="msgM" />
+                        <h:panelGroup>
+                            <h:panelGrid columns="1" width="90%">
+                                <div class="msg advertencia">
+                                    Para mayor seguridad, la contraseña debe contener al menos 6 caracteres y una letra mayúscula.
+                                </div>
+                            </h:panelGrid><br/><br/>
+                            <h:panelGrid columns="2" width="100%" columnClasses="width150" >
+                                <h:outputText value="Contraseña Actual: " />
+                                <h:panelGrid columns="1">
+                                    <p:password id="txtContraseniaActual" value="#{loginBean.contraseniaActual}" styleClass="width200"
+                                                required="#{loginBean.dialogoCambioContrasenia}" placeholder="Ingrese la contraseña actual"
+                                                requiredMessage="Ingrese su contraseña actual" >                                    
+                                    </p:password>
+                                </h:panelGrid>
+                                <h:outputText value="Nueva Contraseña: " />
+                                <h:panelGrid columns="1">
+                                    <p:password id="txtCambioContrasenia" value="#{loginBean.nuevaContrasenia}" required="#{loginBean.dialogoCambioContrasenia}" placeholder="Ingrese nueva contraseña"
+                                                requiredMessage="Ingrese su nueva contraseña" feedback="true" 
+                                                inline="true" promptLabel="Ingrese su nueva contraseña" weakLabel="Débil"
+                                                goodLabel="Seguridad media" strongLabel="Segura" styleClass="width200">
+                                    </p:password>
+                                </h:panelGrid>
+                                <h:outputText value="Confirme Contraseña"  />
+                                <h:panelGrid columns="1">
+                                    <p:password id="txtConfirmeContrasenia" value="#{loginBean.confirmarContrasenia}" required="#{loginBean.dialogoCambioContrasenia}" placeholder="Confirmar la contraseña"
+                                                requiredMessage="Confirme su nueva contraseña" feedback="true" 
+                                                inline="true" promptLabel="Ingrese su nueva contraseña" weakLabel="Débil"
+                                                goodLabel="Seguridad media" strongLabel="Segura" styleClass="width200">                                   
+                                    </p:password>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <f:facet name="footer">
+                            <h:panelGrid columns="2" width="100%"  >
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="#{msg['generico.confirmar.titulo']}" styleClass="botonAccion alineaDerecha" 
+                                                     action="#{cambioContrasenaAction.cambioContraseniaUsuario()}" update="dialogEditarCC"/>
+                                    <p:commandButton value="#{msg['generico.regresar']}" update="dialogEditarCC" immediate="true"
+                                                     styleClass="botonCancelar alineaDerecha" action="#{cambioContrasenaAction.regresar()}" disabled="true"/>
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </f:facet>
+                    </p:dialog>
+                </p:outputPanel>
+            </h:form>
+        </ui:insert> 
+
+
+
+
+
+    </f:view>
+</html>

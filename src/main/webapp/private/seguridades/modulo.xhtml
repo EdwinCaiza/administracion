@@ -1,0 +1,136 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../templates/template.xhtml">
+    <ui:define name="tituloPagina">
+        - Módulos
+    </ui:define>
+    <ui:define name="head">
+        <title>#{msg['aplicacion.nombre.sistema']}</title>
+    </ui:define>
+    <f:metadata>
+        <f:viewAction action="#{usuarioAction.init()}"/>
+    </f:metadata>
+    <ui:define name="contenido">
+        <h:body>
+            <style type="text/css">
+                .ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell { 
+                    text-align: center;
+                }
+                .customPanelGrid .ui-panelgrid-content { 
+                    align-items: center;
+                }
+            </style>
+            <style>
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    background-color: transparent;
+                }
+                .my-heading-row { 
+                    background-color: rgb(207,208,210); 
+                    /*var(--surface-c)*/; 
+                    font-weight: bold; 
+                    color: #ffffff;
+                }
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    padding: 10px;
+                }
+                body .ui-dialog .ui-dialog-footer{
+                    padding:7%;
+                }
+
+                .ui-grid-col-1 {
+                    width: 35%;
+                }
+
+                .ui-grid-col-2 {
+                    width: 8.66666667%;
+                }
+                .ui-grid-col-3 {
+                    width: 65%;
+                }
+
+                .ui-grid-col-4 {
+                    width: 40.33333333%;
+                }
+            </style>
+            <h:form id="formA" prependId="false" rendered="true">
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                        <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                    </p:commandButton>
+                    <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                        <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                    </p:commandButton>
+                </p:confirmDialog>
+                <p:panel class="panel80">
+                    <div class="card">
+                        <p:dataTable id="tblModulos" var="item" value="#{moduloSistemaBean.listaModulos}"
+                                     paginator="true" rows="#{msg['generico.numeroFilas']}"
+                                     paginatorAlwaysVisible="false" paginatorPosition="bottom" rowIndexVar="indice">
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between p-ai-center">
+                                    Lista Módulos
+                                    <div style="text-align: right">
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-success"  icon="pi pi-plus-circle"  value="#{msg['generico.nuevo']}" action="#{moduloSistemaAction.crearNuevo()}" update=":formA"/>
+                                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                                        <p:columnToggler datasource="tblModulos" trigger="toggler"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Nro." style="width:10%; text-align: center ">
+                                <h:outputText value="#{indice+1}"/>
+                            </p:column>
+                            <p:column headerText="Descripción" style="width:30%; text-align: center ">
+                                <h:outputText value="#{item.mosDescripcion}" />
+                            </p:column>
+                            <p:column headerText="Estado" style="width:30%; text-align: center ">
+                                <h:outputText value="#{item.mosEstado}" />
+                            </p:column>
+                            <p:column headerText="#{msg['generico.editar']}" style="width: 10%; text-align: center " >
+                                <p:commandButton styleClass="ui-button-outlined ui-button-success" icon="pi pi-pencil" action="#{moduloSistemaAction.editarItem(item)}" update="dialogNuevo"/>
+                            </p:column>
+                            <p:column headerText="#{msg['generico.eliminar']}" style="width: 10%; text-align: center " >
+                                <p:commandButton styleClass="ui-button-outlined ui-button-danger" icon="pi pi-trash" action="#{moduloSistemaAction.borrarItem(item)}" update="formA" >
+                                    <p:confirm header="#{msg['generico.confirmar.titulo']}" message="#{msg['generico.confirmar.eliminacion']} ?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+
+                    <div class="card">
+                        <p:dialog id="dialogNuevo" modal="false" closable="true" styleClass=" tituloDialogo"
+                                  header="Módulo" showEffect="fade"  style="text-align: center"
+                                  visible="#{moduloSistemaBean.verDialog}" resizable="false">
+                            <p:panelGrid columns="2"
+                                         columnClasses="ui-grid-col-1, ui-grid-col-3"
+                                         layout="grid"
+                                         styleClass="ui-panelgrid-blank ui-fluid"
+                                         style="border:10px none; background-color:transparent; align-items: center">
+                                <p:outputLabel for="@next" value="Id" style="font-weight: bold"/>
+                                <p:inputText  value="#{moduloSistemaBean.moduloActual.mosCodigo}" disabled="true"/>
+                                <p:outputLabel for="@next" value="Descripción" style="font-weight: bold"/>
+                                <p:inputText id="txtDescripcion" value="#{moduloSistemaBean.moduloActual.mosDescripcion}"
+                                             maxlength="64" 
+                                             required="#{moduloSistemaBean.verDialog}" requiredMessage="#{msg['generico.mensajes.requerido']}"
+                                             onkeyup="javascript:this.value = this.value.toUpperCase()">
+                                    <p:watermark for="txtDescripcion" value="Descripción"/>
+                                </p:inputText>
+                            </p:panelGrid>
+                            <f:facet name="footer">
+                                <p:commandButton styleClass="ui-button-outlined ui-button-success alineaDerecha" icon="pi pi-save" value="#{msg['generico.guardar']}" action="#{moduloSistemaAction.guardarDatos()}" update=":formA">
+                                    <p:confirm header="#{msg['generico.confirmar.titulo']}"  message="#{msg['generico.confirmar.detalle']} ?" icon="pi pi-question-circle"/>
+                                </p:commandButton>
+                                <p:fragment>
+                                    <p:commandButton styleClass="ui-button-outlined ui-button-warning alineaDerecha" icon="pi pi-undo" value="#{msg['generico.cancelar']}" action="#{moduloSistemaAction.cancelar()}" update="dialogNuevo"/>
+                                </p:fragment>
+                            </f:facet>
+                        </p:dialog>
+
+                    </div>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

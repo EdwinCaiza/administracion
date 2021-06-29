@@ -1,0 +1,126 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 31/05/2021, 7:57:17
+    Author     : hacker
+*/
+body {
+    margin: 0;
+    padding: 0;
+    background: url(../img/usuario.png) no-repeat center top;
+    background-size: cover;
+    font-family: sans-serif;
+    height: 100vh;
+}
+.reset-box {
+    width: 370px;
+    height: 420px;
+    background: #454343;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    padding: 70px 30px;
+    border-radius: 5px;
+}
+
+.reset-box .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    top: -50px;
+    left: calc(50% - 50px);
+}
+
+.reset-box h1 {
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.reset-box label {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    display: block;
+}
+
+.reset-box input {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.reset-box input[type="text"], .reset-box input[type="password"] {
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.reset-box input[type="submit"] {
+    border: none;
+    outline: none;
+    height: 40px;
+    background: #02b835;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 20px;
+}
+
+.reset-box input[type="submit"]:hover {
+    cursor: pointer;
+    background: #ffc107;
+    color: #000;
+}
+
+.reset-box a {
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: darkgrey;
+}
+
+.reset-box a:hover {
+    color: #fff;
+}
+
+.btnReg {
+    cursor: pointer;
+    background: #04b01d;
+    color: #000;
+}
+.reset-box button{
+    border: none;
+    outline: none;
+    height: 40px;
+    border-radius: 20px;
+    cursor: pointer;
+    background: #ffc107;
+    background: #02b835;
+    color: #fff;
+    font-size: 18px;
+
+}
+.reset-box button :hover{
+    cursor: pointer;
+    background: #ffc107;
+    color: #000;
+    border: none;
+    outline: none;
+    height: 40px;
+    border-radius: 20px;
+}
+
+
+
+

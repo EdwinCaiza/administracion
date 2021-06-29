@@ -1,0 +1,40 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <p:outputPanel id="panDialogBuscarPersona" autoUpdate="false" styleClass="width66P">
+        <p:dialog modal="true" closable="true" id="dialogBuscarPersona" width="30%" header="Buscar Persona" position="top"
+                  visible="#{buscarPersona.verDialogBuscarPersona}" resizable="false">
+            <h:panelGrid columns="2" columnClasses="width100">
+                <h:outputText value=" Cedula / Apellido: "/>
+                <p:inputText styleClass="width200" maxlength="20" id="txtDatoBuscar"
+                             value="#{buscarPersona.datoBuscar}">
+                    <p:ajax event="keyup" listener="#{buscarPersona.buscarPersonaConDato()}" update=":panTablaPersonasEncontradas" process="@this"/>
+                </p:inputText>
+            </h:panelGrid>
+            <f:facet name="footer">
+                <h:panelGrid columns="2">
+                    <p:commandButton styleClass="alineaDerecha" value="#{msg['generico.regresar']}"
+                                     immediate="true" action="#{buscarPersona.cancelarBusqueda()}" update="panDialogBuscarPersona"/>
+                </h:panelGrid>
+            </f:facet>
+            <p:outputPanel id="panTablaPersonasEncontradas" autoUpdate="true">
+                <p:dataTable value="#{buscarPersona.listaPersonas}" var="itemPersona"
+                             paginator="true" rows="#{msg['generico.numeroFilas']}"
+                             paginatorAlwaysVisible="false" paginatorPosition="bottom">
+                    <p:column headerText="Cédula" style=" width: 25px ">
+                        <ui:insert name="seleccionaPersona" />
+                    </p:column>
+                    <p:column headerText="Apellidos" style="width: 10px">
+                        <h:outputText value="#{itemPersona[5]}"/>
+                    </p:column>
+                    <p:column headerText="Nombres" style="width: 10px">
+                        <h:outputText value="#{itemPersona[6]}"/>
+                    </p:column>
+                </p:dataTable>
+
+            </p:outputPanel>
+        </p:dialog>
+    </p:outputPanel>    
+</ui:composition>

@@ -1,0 +1,193 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../templates/template.xhtml">
+    <ui:define name="tituloPagina">
+        - Habilita Usuario
+    </ui:define>  
+    <ui:define name="head">
+        <title>#{msg['aplicacion.nombre.sistema']}</title>
+
+    </ui:define> 
+    <f:metadata>
+        <f:viewAction action="#{perfilUsuarioAction.init()}"/>
+    </f:metadata>
+    <ui:define name="contenido">
+        <h:body>
+            <style type="text/css">
+                .ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell { 
+                    text-align: center;
+                }
+                .customPanelGrid .ui-panelgrid-content { 
+                    align-items: flex-start;
+                }
+            </style>
+            <style>
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    background-color: transparent;
+                }
+                .my-heading-row { 
+                    background-color: rgb(207,208,210); 
+                    /*var(--surface-c)*/; 
+                    font-weight: bold; 
+                    color: #ffffff;
+                }
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    padding: 10px;
+                }
+                body .ui-dialog .ui-dialog-footer{
+                    padding:8%;
+                }
+
+                .ui-grid-col-1 {
+                    width: 35%;
+                }
+
+                .ui-grid-col-2 {
+                    width: 8.66666667%;
+                }
+                .ui-grid-col-3 {
+                    width: 75%;
+                }
+
+                .ui-grid-col-4 {
+                    width: 40.33333333%;
+                }
+                .ui-dialog-content ui-widget-content{
+                    text-align: -moz-left;
+                }
+                .p-grid, .p-grid {
+                    font-weight: bold; 
+                    text-align: justify;
+                }
+                body .ui-button.ui-button-success.ui-state-active{
+                    color: darkgreen;
+                    icon: inherit;
+                    image-resolution: from-image;
+                }
+                body .ui-button.ui-button-success.ui-state-deactive{
+                    color: red;
+                }
+            </style>
+            <h:form id="formA" prependId="false" rendered="true">
+                <autoupdate>
+                    <p:growl globalOnly="true" showDetail="true" id="growl" life="1000"/>
+                </autoupdate>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                        <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                    </p:commandButton>
+                    <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                        <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                    </p:commandButton>
+                </p:confirmDialog>
+                <p:panel class="panel80">
+                    <div class="card">
+                        <p:dataTable id="tblPerfil" var="item" value="#{perfilUsuarioBean.listaPerfilUsuario}" selectionMode="single"
+                                     selection="#{perfilUsuarioBean.perfilUsuarioActial}" rowKey="#{item.peuCodigo}"
+                                     paginator="true" rows="#{msg['generico.numeroFilas']}"
+                                     paginatorAlwaysVisible="false" paginatorPosition="bottom" rowIndexVar="indice">
+                            <p:ajax event="rowSelect" listener="#{perfilUsuarioAction.selecionaPerfilUsuario()}" update="dialogNuevo"/>
+                            <p:ajax event="rowUnselect" listener="#{perfilUsuarioAction.deSelecionaPerfilUsuario()}" update="dialogNuevo"/>
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between p-ai-center">
+                                    Lista de Ususarios habilitados
+                                    <div style="text-align: right">
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-success"  icon="pi pi-plus-circle"  value="#{msg['generico.nuevo']}" action="#{perfilUsuarioAction.crearNuevo()}" update=":formA"/>
+                                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                                        <p:columnToggler datasource="tblPerfil" trigger="toggler"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Nro." style="width:5%; text-align: center ">
+                                <h:outputText value="#{indice+1}"/>
+                            </p:column>
+                            <p:column headerText="Codigo" style="width:5%; text-align: center ">
+                                <h:outputText value="#{item.peuCodigo}"/>
+                            </p:column>
+                            <p:column headerText="Usuario" style="width:15%; text-align: center ">
+                                <h:outputText value="#{item.usiCodigo.perCodigo.perApellidos}"/>
+                            </p:column>
+                            <p:column headerText="Usuario" style="width:15%; text-align: center ">
+                                <h:outputText value="#{item.usiCodigo.perCodigo.perNombres}"/>
+                            </p:column>
+                            <p:column headerText="Perfil" style="width:20%; text-align: center ">
+                                <h:outputText value="#{item.pesCodigo.pesDescripcion}"/>
+                            </p:column>
+                            <p:column headerText="Fecha Asigna" style="width:10%; text-align: center ">
+                                <h:outputText value="#{item.peuFechaasigna}">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" locale="es" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Fecha Inicia" style="width:10%; text-align: center ">
+                                <h:outputText value="#{item.peuFinicia}">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" locale="es" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="Fecha Finaliza" style="width:10%; text-align: center ">
+                                <h:outputText value="#{item.peuFfin}">
+                                    <f:convertDateTime pattern="dd-MMM-yyyy" locale="es" timeZone="America/Guayaquil" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column headerText="#{msg['generico.eliminar']}" style="width: 10%; text-align: center " >
+                                <p:commandButton styleClass="ui-button-outlined ui-button-danger" icon="pi pi-trash" action="#{perfilUsuarioAction.borrarRegistro(item)}" update="formA" >
+                                    <p:confirm header="#{msg['generico.confirmar.titulo']}" message="#{msg['generico.confirmar.eliminacion']} ?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div class="card">
+                        <p:dialog id="dialogNuevo" modal="true" closable="false" style="text-align: center;"
+                                  header="Perfil por Usuario" showEffect="fade"
+                                  visible="#{perfilUsuarioBean.verDialog}" resizable="false">
+                            <p:messages id="messages" showDetail="true" closable="true" ></p:messages>
+                            <p:panelGrid columns="2"
+                                         columnClasses="ui-grid-col-1, ui-grid-col-3"
+                                         layout="grid"
+                                         styleClass="ui-panelgrid-blank ui-fluid"
+                                         style="border:10px none; background-color:transparent">
+                                <p:outputLabel for="@next" value="Id: *" style="font-weight: bold; width: 90%"/>
+                                <p:inputText value="#{perfilUsuarioBean.perfilUsuarioActial.peuCodigo}" disabled="true"/>
+                                <p:outputLabel for="@next" value="Usuario: *" style="font-weight: bold; width: 90%"/>
+                                <p:selectOneMenu  id="selUsuario" value="#{perfilUsuarioBean.perfilUsuarioActial.usiCodigo}" converter="selectItemsConverter"
+                                                  style="width: 100%">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione..."/>
+                                    <f:selectItems value="#{usuarioBean.listaUsuarios}" 
+                                                   var="items" itemLabel="#{items.usiUsuario}" itemValue="#{item}"/> 
+                                    <p:ajax listener="#{perfilUsuarioAction.validaUsiarioAsignado()}" update="dialogNuevo"/>
+                                </p:selectOneMenu>
+                                <p:outputLabel for="@next" value="Perfil: *" style="font-weight: bold"/>
+                                <p:selectOneMenu  id="selPerfiles" value="#{perfilUsuarioBean.perfilUsuarioActial.pesCodigo}" converter="selectItemsConverter"
+                                                  style="width: 100%">
+                                    <f:selectItem itemValue="" itemLabel="Seleccione..."/>
+                                    <f:selectItems value="#{perfilBean.listaPerfiles}" 
+                                                   var="item" itemLabel="#{item.pesDescripcion}" itemValue="#{item}"/> 
+                                </p:selectOneMenu>
+                                <p:outputLabel for="@next" value="Fecha Inicio *" style="font-weight: bold"/>
+                                <p:datePicker id="buttonbarIni" value="#{perfilUsuarioBean.perfilUsuarioActial.peuFinicia}" showButtonBar="true"/>
+                                <p:outputLabel for="@next" value="Fecha Fin *" style="font-weight: bold"/>
+                                <p:datePicker id="buttonbarFin" value="#{perfilUsuarioBean.perfilUsuarioActial.peuFfin}" showButtonBar="true"/>
+                            </p:panelGrid>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:fragment>
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-warning alineaIzquierda" icon="pi pi-undo" value="#{msg['generico.cancelar']}" action="#{perfilUsuarioAction.cancelar()}" update="dialogNuevo"/>
+                                    </p:fragment>
+                                    <p:commandButton styleClass="ui-button-outlined ui-button-success alineaDerecha" icon="pi pi-save" 
+                                                     disabled="#{perfilUsuarioBean.activaGuardar}"
+                                                     value="#{msg['generico.guardar']}" action="#{perfilUsuarioAction.guardarInformacion()}" update=":formA">
+                                        <p:confirm header="#{msg['generico.confirmar.titulo']}"  message="#{msg['generico.confirmar.detalle']} ?" icon="pi pi-question-circle"/>
+                                    </p:commandButton>
+
+                                </center>
+                            </f:facet>
+
+                        </p:dialog>
+                    </div>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

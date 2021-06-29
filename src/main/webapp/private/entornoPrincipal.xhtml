@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../templates/template.xhtml">
+     <ui:define name="tituloPagina">
+        -  Bienvenido al Sistema de Contable
+    </ui:define>  
+    <ui:define name="head">
+        <title>#{msg['aplicacion.nombre.sistema']}</title>
+        <!--<h:outputStylesheet library="comunes" name="/resources/css/loaderBar.css" />-->
+        <link href="../resources/css/loaderBar.css" rel="stylesheet" type="text/css"/>
+        <style type="text/css">
+            .ui-growl {
+                top:20px;
+                width: 70%;
+                left: 10px!important;
+                margin-left:auto;
+                margin-right:auto;
+                position: fixed;
+                z-index: 99999!important;
+            }
+
+            .ui-growl-message {
+                padding: 0 0 5px 0;
+                width: 95%;
+                float: right;
+            }
+
+            .ui-growl-item-container {
+                position: relative;
+                margin: 0 0 10px 0;
+                opacity: 0.95;
+                filter: alpha(opacity=95);
+            }
+            .ui-widget-content a {
+                color: #336699;
+            }
+            .ui-datatable table {
+                border-collapse: collapse;
+                width: 100%;
+                table-layout: fixed;
+                border-color: transparent;
+            }
+            .ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
+                opacity: .55; 
+                filter: Alpha(Opacity=55);
+                background-image: none;
+            }
+        </style>
+
+        <!-- CODIGO DE SEGUIMIENTO - Global site tag (gtag.js) - Google Analytics -->
+        <script async="true"  src="https://www.googletagmanager.com/gtag/js?id=UA-90538995-4"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'UA-90538995-4');
+        </script>
+    </ui:define> 
+    sdsfffd
+</ui:composition>

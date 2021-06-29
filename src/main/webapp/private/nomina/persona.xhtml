@@ -1,0 +1,213 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../templates/template.xhtml">
+    <ui:define name="tituloPagina">
+        - Registro de Personas
+    </ui:define>
+    <ui:define name="head">
+        <title>#{msg['aplicacion.nombre.sistema']}</title>
+    </ui:define>
+    <f:metadata>
+        <f:viewAction action="#{personaAction.init()}"/>
+    </f:metadata>
+    <ui:define name="contenido">
+        <h:body>
+            <style type="text/css">
+                .ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell { 
+                    text-align: center;
+                }
+                .customPanelGrid .ui-panelgrid-content { 
+                    align-items: center;
+                }
+            </style>
+            <style>
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    background-color: transparent;
+                }
+                .my-heading-row { 
+                    background-color: rgb(207,208,210); 
+                    /*var(--surface-c)*/; 
+                    font-weight: bold; 
+                    color: #ffffff;
+                }
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    padding: 10px;
+                }
+                body .ui-dialog .ui-dialog-footer{
+                    padding:7%;
+                }
+            </style>
+
+
+            <h:form id="formA" prependId="false" rendered="true">
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                        <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                    </p:commandButton>
+                    <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                        <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                    </p:commandButton>
+                </p:confirmDialog>
+
+                <p:panel class="panel80">
+                    <div class="card">
+                        <p:outputPanel id="panTablaDatos" >
+                            <p:dataTable id="tblPersonas" value="#{personaBean.listaPersonas}" var="item"
+                                         paginator="true" rows="#{msg['generico.numeroFilas']}"
+                                         paginatorAlwaysVisible="false" paginatorPosition="bottom" rowIndexVar="indice">
+
+                                <f:facet name="header">
+                                    <div class="p-d-flex p-jc-between p-ai-center">
+                                        Lista de Personas
+                                        <div style="text-align: right">
+                                                <p:commandButton styleClass="ui-button-outlined ui-button-success"  icon="pi pi-plus-circle"  value="#{msg['generico.nuevo']}" action="#{personaAction.crearNuevo()}" update=":formA"/>
+                                                <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                                                <p:columnToggler datasource="tblPersonas" trigger="toggler"/>
+                                        </div>
+                                    </div>
+                                </f:facet>
+                                <p:column headerText="Nro." style="width:10px; text-align: center ">
+                                    <h:outputText value="#{indice+1}"/>
+                                </p:column>
+                                <p:column headerText="Tipo Persona" style="width:10px; text-align: center ">
+                                    <h:outputText value="#{item.tipCodigo.tipDescripcion}"/>
+                                </p:column> 
+                                <p:column headerText="Cedula" style="width:10px; text-align: center ">
+                                    <p:commandLink value="#{item.perCedula}" action="#{personaAction.verItem(item)}" update="panDialogNuevo"/>
+                                </p:column>
+                                <p:column headerText="Apellidos" style="width:20px; text-align: center ">
+                                    <h:outputText value="#{item.perApellidos}"/>
+                                </p:column>
+                                <p:column headerText="Nombres" style="width:20px; text-align: center ">
+                                    <h:outputText value="#{item.perNombres}"/>
+                                </p:column>
+                                <p:column headerText="E-mail" style="width:10px; text-align: center ">
+                                    <h:outputText value="#{item.perCorreo}"/>
+                                </p:column>
+                                <p:column headerText="Telefono" style="width:10px; text-align: center ">
+                                    <h:outputText value="#{item.perTelefono}"/>
+                                </p:column>
+
+                                <p:column headerText="#{msg['generico.eliminar']}" style="width: 10%; text-align: center " >
+                                    <p:commandButton styleClass="ui-button-outlined ui-button-danger" icon="pi pi-trash" action="#{personaAction.eliminarPersona(item)}" update="formA" >
+                                        <p:confirm header="#{msg['generico.confirmar.titulo']}" message="#{msg['generico.confirmar.eliminacion']} ?" icon="ui-icon-alert"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:outputPanel>
+                    </div>
+                    <div class="card">
+                        <p:outputPanel id="panDialogNuevo" styleClass="width100">
+                            <p:dialog modal="true" closable="false" styleClass=" tituloDialogo"
+                                      header="Datos Persona" showEffect="fade"  style="text-align: center"
+                                      visible="#{personaBean.verDialog}" resizable="false">
+                                <h:panelGrid columns="1" columnClasses="width300 " style="text-align: justify">
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+
+                                        <h:outputText value="Código:"/>
+                                        <p:inputText id="txtCodigo" styleClass="width150" maxlength="10" disabled="true"
+                                                     value="#{personaBean.personaActual.perCodigo}">
+                                            <p:watermark for="txtCodigo" value="Campo Automático"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="Tipo Persona:*"/>
+                                        <p:selectOneMenu id="txtTipoPersona" value="#{personaBean.personaActual.tipCodigo}" converter="selectItemsConverter"
+                                                         style="width: 160px">
+                                            <f:selectItem itemValue="" itemLabel="Seleccione..."/>
+                                            <f:selectItems value="#{tipoPersonaBean.listaTipoPersona}" 
+                                                           var="itemTipoPer" itemLabel="#{itemTipoPer.tipDescripcion}" itemValue="#{itemTipoPer}"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="Cédula:*"/>
+                                        <p:inputText id="txtCedula" maxlength="15" 
+                                                     value="#{personaBean.personaActual.perCedula}"
+                                                     requiredMessage="#{msg['generico.mensajes.requerido']}" 
+                                                     required="#{personaBean.verDialog}" >
+                                            <p:focus context="txtCedula"/>
+                                            <p:watermark for="txtCedula" value="Cedula / Ruc"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="Apellidos: *"/>
+                                        <p:inputText id="txtApellidos" maxlength="64" 
+                                                     styleClass="width250" required="#{personaBean.verDialog}"
+                                                     requiredMessage="#{msg['generico.mensajes.requerido']}"
+                                                     value="#{personaBean.personaActual.perApellidos}"
+                                                     onkeyup="var start = this.selectionStart;
+                                                             var end = this.selectionEnd;
+                                                             this.value = this.value.toUpperCase();
+                                                             this.setSelectionRange(start, end);">
+                                            <p:watermark for="txtApellidos" value="Apellidos"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="Nombres: *"/>
+                                        <p:inputText id="txtNombres" maxlength="64" 
+                                                     styleClass="width250" required="#{personaBean.verDialog}"
+                                                     requiredMessage="#{msg['generico.mensajes.requerido']}"
+                                                     value="#{personaBean.personaActual.perNombres}"
+                                                     onkeyup="var start = this.selectionStart;
+                                                             var end = this.selectionEnd;
+                                                             this.value = this.value.toUpperCase();
+                                                             this.setSelectionRange(start, end);">
+                                            <p:watermark for="txtNombres" value="Nombres"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="Telefono: *"/>
+                                        <p:inputText id="txtTelefono" maxlength="10" 
+                                                     value="#{personaBean.personaActual.perTelefono}">
+                                            <p:watermark for="txtTelefono" value="000-000-000"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="E-mail: *"/>
+                                        <p:inputText id="txtEmail" maxlength="32" 
+                                                     styleClass="width250" 
+                                                     value="#{personaBean.personaActual.perCorreo}">
+                                            <p:watermark for="txtEmail" value="usuario@ingenio.com"/>
+                                            <!--                                        <f:validateRegex
+                                                                                        pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />-->
+                                        </p:inputText>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="Dirección: *"/>
+                                        <p:inputText id="txtDireccion" maxlength="10" 
+                                                     value="#{personaBean.personaActual.perDireccion}"
+                                                     onkeyup="javascript:this.value = this.value.toUpperCase()">
+                                            <p:watermark for="txtDireccion" value="Direción"/>
+                                        </p:inputText>
+                                    </h:panelGrid>
+                                    <h:panelGrid columns="2" columnClasses="width120, width300">
+                                        <h:outputText value="Genero: *"/>
+                                        <p:selectOneMenu id="txtGenero" value="#{personaBean.personaActual.perGenero}"
+                                                         styleClass="width200">
+                                            <f:selectItem itemLabel=" Hombre " itemValue="M"/>
+                                            <f:selectItem itemLabel=" Mujer " itemValue="F"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="txtGenero" display="text"/>
+                                    </h:panelGrid>
+
+                                </h:panelGrid>
+                                <f:facet name="footer">
+                                    <p:commandButton styleClass="ui-button-outlined ui-button-success alineaDerecha" icon="pi pi-save" value="#{msg['generico.guardar']}" action="#{personaAction.guardarPersona()}" update=":formA">
+                                        <p:confirm header="#{msg['generico.confirmar.titulo']}"  message="#{msg['generico.confirmar.detalle']} ?" icon="pi pi-question-circle"/>
+                                    </p:commandButton>
+                                    <p:fragment>
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-warning alineaDerecha" icon="pi pi-undo" value="#{msg['generico.cancelar']}" action="#{personaAction.cancelar()}" update="panDialogNuevo"/>
+                                    </p:fragment>
+                                </f:facet>
+                            </p:dialog>
+                        </p:outputPanel>
+                    </div>
+                </p:panel>
+
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,178 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="../../templates/template.xhtml">
+    <ui:define name="tituloPagina">
+        - Cargos
+    </ui:define>  
+    <ui:define name="head">
+        <title>#{msg['aplicacion.nombre.sistema']}</title>
+
+    </ui:define> 
+    <f:metadata>
+        <f:viewAction action="#{cagosAction.init()}"/>
+    </f:metadata>
+    <ui:define name="contenido">
+        <h:body>
+            <style type="text/css">
+                .ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell { 
+                    text-align: center;
+                }
+                .customPanelGrid .ui-panelgrid-content { 
+                    align-items: flex-start;
+                }
+            </style>
+            <style>
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    background-color: transparent;
+                }
+                .my-heading-row { 
+                    background-color: rgb(207,208,210); 
+                    /*var(--surface-c)*/; 
+                    font-weight: bold; 
+                    color: #ffffff;
+                }
+                body .ui-panelgrid .ui-panelgrid-cell { 
+                    padding: 10px;
+                }
+                body .ui-dialog .ui-dialog-footer{
+                    padding:8%;
+                }
+
+                .ui-grid-col-1 {
+                    width: 35%;
+                }
+
+                .ui-grid-col-2 {
+                    width: 8.66666667%;
+                }
+                .ui-grid-col-3 {
+                    width: 75%;
+                }
+
+                .ui-grid-col-4 {
+                    width: 40.33333333%;
+                }
+                .ui-dialog-content ui-widget-content{
+                    text-align: -moz-left;
+                }
+                .p-grid, .p-grid {
+                    font-weight: bold; 
+                    text-align: justify;
+                }
+                body .ui-button.ui-button-success.ui-state-active{
+                    color: darkgreen;
+                    icon: inherit;
+                    image-resolution: from-image;
+                }
+                body .ui-button.ui-button-success.ui-state-deactive{
+                    color: red;
+                }
+            </style>
+            <h:form id="formA" prependId="false" rendered="true">
+                <autoupdate>
+                    <p:growl globalOnly="true" showDetail="true" id="growl" life="1000"/>
+                </autoupdate>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                        <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                    </p:commandButton>
+                    <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                        <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                    </p:commandButton>
+                </p:confirmDialog>
+                <p:panel class="panel80">
+                    <div class="card">
+                        <p:dataTable id="tblPerfil" var="item" value="#{cargosBean.listaCargos}" selectionMode="single"
+                                     selection="#{cargosBean.cargoActual}" rowKey="#{item.carCodigo}"
+                                     paginator="true" rows="#{msg['generico.numeroFilas']}"
+                                     paginatorAlwaysVisible="false" paginatorPosition="bottom" rowIndexVar="indice">
+                            <p:ajax event="rowSelect" listener="#{cagosAction.selecionaCargo()}" update="dialogNuevo"/>
+                            <p:ajax event="rowUnselect" listener="#{cagosAction.selecionaCargo()}" update="dialogNuevo"/>
+                            <f:facet name="header">
+                                <div class="p-d-flex p-jc-between p-ai-center">
+                                    Lista de Cargos
+                                    <div style="text-align: right">
+                                        <p:commandButton styleClass="ui-button-outlined ui-button-success"  icon="pi pi-plus-circle"  value="#{msg['generico.nuevo']}" action="#{cagosAction.crearNuevo()}" update=":formA"/>
+                                        <p:commandButton id="toggler" type="button" value="Columns" icon="pi pi-align-justify"/>
+                                        <p:columnToggler datasource="tblPerfil" trigger="toggler"/>
+                                    </div>
+                                </div>
+                            </f:facet>
+                            <p:column headerText="Nro." style="width:5%; text-align: center " responsivePriority="3" >
+                                <h:outputText value="#{indice+1}"/>
+                            </p:column>
+                            <p:column headerText="Descripción" style="width:30%; text-align: justify " responsivePriority="1">
+                                <h:outputText value="#{item.carDescripcion}" />
+                            </p:column>
+                            <p:column headerText="Siglas" style="width:30%; text-align: justify " responsivePriority="1">
+                                <h:outputText value="#{item.carIdentificador}" />
+                            </p:column>
+                            <p:column headerText="Estado" style="width:30%; text-align: justify " responsivePriority="2">
+                                <h:outputText value="#{item.carEstado}" />
+                            </p:column>
+                            <p:column headerText="#{msg['generico.eliminar']}" style="width: 10%; text-align: center "  responsivePriority="2">
+                                <p:commandButton styleClass="ui-button-outlined ui-button-danger" icon="pi pi-trash" action="#{cagosAction.borrarDatos(item)}" update="formA" >
+                                    <p:confirm header="#{msg['generico.confirmar.titulo']}" message="#{msg['generico.confirmar.eliminacion']} ?" icon="ui-icon-alert"/>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                    <div class="card">
+                        <p:dialog id="dialogNuevo" modal="true" closable="false" style="text-align: center;"
+                                  header="Perfil por Usuario" showEffect="fade"
+                                  visible="#{cargosBean.verDialog}" resizable="false">
+                            <p:messages id="messages" showDetail="true" closable="true" ></p:messages>
+                            <p:panelGrid columns="2"
+                                         columnClasses="ui-grid-col-1, ui-grid-col-3"
+                                         layout="grid"
+                                         styleClass="ui-panelgrid-blank ui-fluid"
+                                         style="border:10px none; background-color:transparent">
+                                <p:outputLabel for="@next" value="Id: " style="font-weight: bold; width: 90%"/>
+                                <p:inputText value="#{cargosBean.cargoActual.carCodigo}" disabled="true"/>  
+
+                                <p:outputLabel for="@next" value="Descripción: " style="font-weight: bold; width: 90%"/>
+                                <p:inputText value="#{cargosBean.cargoActual.carDescripcion}" disabled="false"
+                                             maxlength="64" onkeyup="javascript:this.value = this.value.toUpperCase()"
+                                             required="#{cargosBean.verDialog}" requiredMessage="#{msg['generico.mensajes.requerido']}">
+                                    <p:ajax event="blur" listener="#{cagosAction.validaExistencia()}"  update="btnGuardar"/>
+                                </p:inputText>
+                                <p:outputLabel for="@next" value="SIGAS: " style="font-weight: bold; width: 90%"/>
+                                <p:inputText value="#{cargosBean.cargoActual.carIdentificador}" disabled="false"
+                                             maxlength="4" onkeyup="javascript:this.value = this.value.toUpperCase()"
+                                             required="#{cargosBean.verDialog}" requiredMessage="#{msg['generico.mensajes.requerido']}"/>
+                                <p:outputLabel rendered="#{cargosBean.verEstado}" for="@next" value="SIGAS: " style="font-weight: bold; width: 90%"/>
+                                <p:selectOneMenu rendered="#{cargosBean.verEstado}" id="option" value="#{cargosBean.cargoActual.carEstado}">
+                                    <f:selectItem itemLabel="Seleccione..." itemValue=""/>
+                                    <f:selectItem itemLabel="Activo" itemValue="A"/>
+                                    <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                                    <f:facet name="footer">
+                                        <p:divider styleClass="p-mt-0" />
+                                        <h:outputText value="3 options" style="font-weight:bold;"/>
+                                    </f:facet>
+                                </p:selectOneMenu>
+
+                            </p:panelGrid>
+                            <f:facet name="footer">
+                                <center>
+                                    <p:fragment>
+                                        <p:commandButton  styleClass="ui-button-outlined ui-button-warning alineaIzquierda" icon="pi pi-undo" value="#{msg['generico.cancelar']}" action="#{cagosAction.cancelar()}" update="formA"/>
+                                    </p:fragment>
+                                    <p:commandButton id="btnGuardar" styleClass="ui-button-outlined ui-button-success alineaDerecha" icon="pi pi-save" 
+                                                     disabled="#{cargosBean.activaGuardar}"
+                                                     value="#{msg['generico.guardar']}" action="#{cagosAction.guardarDatos()}" update=":formA">
+                                        <p:confirm header="#{msg['generico.confirmar.titulo']}"  message="#{msg['generico.confirmar.detalle']} ?" icon="pi pi-question-circle"/>
+                                    </p:commandButton>
+
+                                </center>
+                            </f:facet>
+                        </p:dialog>
+
+                    </div>
+                </p:panel>
+            </h:form>
+        </h:body>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"      
+      xmlns:p="http://primefaces.org/ui" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>IngenioSoftware</title>
+        <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="shortcut icon" type="image/x-icon" href="#{request.contextPath}/resources/img/icoIngenio.jpg"/>
+        <link rel="stylesheet" type="text/css" href="resources/css/resetLog.css"/>
+    </h:head>
+    <h:body style="background-image: url('resources/img/fondo.jpg');  background-size: cover ">
+        <style type="text/css">
+            /*------------------- MODIFICADOS PRIMEFACES ----------------------*/
+            .ui-widget-content a{
+                color: #0000ff;
+                text-decoration: none;
+            }
+            a:hover{
+                color: #009933;
+                text-decoration: underline;
+            }
+
+            .ui-growl {
+                top:40px;
+                width: 70%;
+                left: 10px!important;
+                margin-left:auto;
+                margin-right:auto;
+                position: fixed;
+                z-index: 99999!important;
+            }
+
+            .ui-growl-message {
+                padding: 0 0 5px 0;
+                width: 95%;
+                float: right;
+            }
+
+            .ui-growl-item-container {
+                position: relative;
+                margin: 0 0 10px 0;
+                opacity: 0.95;
+                filter: alpha(opacity=95);
+            }
+            .ui-dialog.ui-widget-content .ui-dialog-title {
+                font-size: 14px !important;
+                width: 100%  !important;
+            }
+
+            .ui-selectonemenu .ui-selectonemenu-trigger {
+                border-right: 0;
+                border-top: 0;
+                border-bottom: 0;
+                cursor: pointer;
+                width: 24px;
+                height: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                padding: 0 3px;
+            }
+
+
+            @media screen and (max-width:768px) {
+                .ui-growl {
+                    top:40px;
+                    width: 90%;
+                    margin-left:auto;
+                    margin-right:auto;
+                    position: fixed;
+                }
+
+                .ui-growl-message {
+                    padding: 0 0 5px 0;
+                    width: 96%;
+                    float: right;
+                }
+
+                .ui-growl-item-container {
+                    position: relative;
+                    margin: 0 0 0px 0;
+                    opacity: 0.95;
+                    filter: alpha(opacity=95);
+                }
+
+            }
+
+        </style>
+        <style>
+            body .ui-panelgrid .ui-panelgrid-cell { 
+                background-color: transparent;
+            }
+
+            body .ui-messages ui-messages-noicon ui-widget{
+                align-content: flex-end;
+                background-color: rgb(207,208,210);
+            }
+            .my-heading-row { 
+                background-color: rgb(207,208,210); 
+                /*var(--surface-c)*/; 
+                font-weight: bold; 
+                color: #ffffff;
+            }
+            .ui-panelgrid-cell {
+                align-items: center;
+            }
+            body .ui-panelgrid .ui-panelgrid-cell { 
+                padding: 10px;
+            }
+            body .ui-dialog .ui-dialog-footer{
+                padding:7%;
+            }
+            .ui-grid-col-3 {
+                width: 99%;
+                align-content: center;
+                align-items: center;
+            }
+
+            .ui-grid-col-4 {
+                width: 40.33333333%;
+            }
+        </style>
+        <h:form  id="formA" class="form" prependId="false" >
+            <autoupdate>
+                <p:growl globalOnly="false" showDetail="true" id="growl" life="1000"/>
+            </autoupdate>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton id="btnNo" value="No" type="button" icon="#{msg['icono.boton.confirmar.no']}" styleClass=" ui-button-outlined ui-button-danger ui-confirmdialog-no">
+                    <p:tooltip for="btnNo" value="#{msg['tooltip.mensaje.no']}" position="left"/>
+                </p:commandButton>
+                <p:commandButton  id="btnSi" value="Si" type="button" icon="#{msg['icono.boton.confirmar.si']}" styleClass="ui-button-outlined ui-button-success ui-confirmdialog-yes">
+                    <p:tooltip for="btnSi" value="#{msg['tooltip.mensaje.si']}" position="left"/>
+                </p:commandButton>
+            </p:confirmDialog>
+
+            <div class="reset-box">
+                <img src="resources/img/candadoAbierto.jpg" class="avatar" alt="Avatar Image"/>
+                <h1>Cambio de Contraseña</h1>
+                <div class="card">
+                    <h:outputLabel value="Ingrese su contraseña Anterior:" />
+                    <p:inputText id="txtDato" value="#{accesoBean.usuario}"
+                                 maxlength="64" required="true"
+                                 requiredMessage="#{msg['generico.mensajes.requerido']}">
+                        <p:watermark for="txtDato" value="Digite su contraseña Actual"/>
+                        <p:ajax event="blur" listener="#{accesoBean.validaContrasena()}" update="formA"/>
+                    </p:inputText>
+                    <h:outputLabel value="Ingrese su contraseña Nueva:" />
+                    <p:inputText id="txtNueva" value="#{accesoBean.contrasena}"
+                                 maxlength="64" required="true" disabled="#{accesoBean.activaTxtContrasena}"
+                                 requiredMessage="#{msg['generico.mensajes.requerido']}">
+                        <p:watermark for="txtNueva" value="Digite su nueva Contraseña"/>
+                        <p:ajax event="blur" process="@this" update="formA"/>
+                    </p:inputText>
+                    <h:outputLabel value="ReIngrese su contraseña Nueva:" />
+                    <p:inputText id="txtReNueva" value="#{accesoBean.contrasenaNueva}"
+                                 maxlength="64" required="true" disabled="#{accesoBean.activaTxtContrasena}"
+                                 requiredMessage="#{msg['generico.mensajes.requerido']}">
+                        <p:watermark for="txtReNueva" value="ReIngrese su nueva contraseña"/>
+                        <p:ajax event="blur" listener="#{accesoBean.validaContraseñasNuevas()}" update="formA"/>
+                    </p:inputText>
+                    <p:panelGrid columns="1"
+                                 columnClasses=" ui-grid-col-3"
+                                 layout="grid"
+                                 styleClass="ui-panelgrid-blank ui-fluid"
+                                 style="border:10px none; background-color:transparent">
+
+                        <p:commandButton value="#{msg['generico.resetear']}" action="#{accesoBean.cambiarClave()}" disabled="#{accesoBean.activaCambiaContraseña}">
+                            <p:confirm header="#{msg['generico.confirmar.titulo']}"  message="#{msg['generico.confirmar.detalleReset']} ?" icon="pi pi-question-circle"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                    <br/>       
+                    <a > Derechos reservados © 2021 EC, Inc.</a>
+                </div>
+            </div>
+            <p:messages id="msg" showIcon="false" showDetail="true" globalOnly="true"   />
+        </h:form>
+    </h:body>
+</html>
+
